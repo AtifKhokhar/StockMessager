@@ -2,19 +2,23 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus;
+using Microsoft.ServiceBus.Messaging;
+using TopicClient = Microsoft.Azure.ServiceBus.TopicClient;
 
 namespace StockMessager
 {
-    class Program
+    public class Program
     {
-        string ServiceBusConnectionString = ConfigurationManager.ConnectionStrings["StockEventServiceBus"].ToString();
-        const string TopicName = "AtifStockEvent";
-        static ITopicClient topicClient;
+        static string ServiceBusConnectionString = ConfigurationManager.ConnectionStrings["StockEventServiceBus"].ToString();
+        const string TopicName = "stocklevels";
+        static MessagingFactory factory = MessagingFactory.CreateFromConnectionString(ServiceBusConnectionString);
+        static MessageSender sender = factory.CreateMessageSender(TopicName);
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-
+           
+           var stockMessagerService = new StockMessagerService(sender);
         }
+
     }
 }
