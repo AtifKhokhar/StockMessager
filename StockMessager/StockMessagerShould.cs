@@ -29,10 +29,10 @@ namespace StockMessager
             //arrange
             var stockItem = new StockItem("ABC",1,"FCLondon","DHL");
             var stockMessagerService = new StockMessagerService(sender);
-            var reciever = factory.CreateMessageReceiver("stocklevels/subscriptions/GBWarehouseStockLevels");
-            //act
+            var topicClient = factory.CreateTopicClient("stocklevels");
+            var subscriptionClient = factory.CreateSubscriptionClient(topicClient.Path, "GBWarehouseStockLevels");
              stockMessagerService.SendMessageAsync(stockItem).Wait();
-            var message = reciever.Receive();
+            var message = subscriptionClient.Receive();
             //assert
             Assert.That(message.GetBody<StockItem>().Sku.Equals("ABC"));
         }
