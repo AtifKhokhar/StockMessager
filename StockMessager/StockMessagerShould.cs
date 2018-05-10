@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
+using Newtonsoft.Json;
 
 namespace StockMessager
 {
@@ -31,10 +33,12 @@ namespace StockMessager
             var stockMessagerService = new StockMessagerService(sender);
             var topicClient = factory.CreateTopicClient("stocklevels");
             var subscriptionClient = factory.CreateSubscriptionClient(topicClient.Path, "GBWarehouseStockLevels");
-             stockMessagerService.SendMessageAsync(stockItem).Wait();
+            stockMessagerService.SendMessageAsync(stockItem).Wait();
             var message = subscriptionClient.Receive();
+            var streamReader = new StreamReader(message.GetBody<Stream>());
+            var result = JsonConvert.DeserializeObject<StockItem>(streamReader.ReadToEnd());
             //assert
-            Assert.That(message.GetBody<StockItem>().Sku.Equals("ABC"));
+            Assert.That(result.Sku.Equals("ABC"));
         }
 
     }

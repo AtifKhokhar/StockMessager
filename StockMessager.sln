@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMessager", "StockMessager\StockMessager.csproj", "{B0508B6A-32A6-4BF4-A1E8-E618987E64A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockListener", "StockListener\StockListener.csproj", "{B8E902E4-AFE5-4C67-A28D-90282A75961A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B0508B6A-32A6-4BF4-A1E8-E618987E64A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0508B6A-32A6-4BF4-A1E8-E618987E64A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0508B6A-32A6-4BF4-A1E8-E618987E64A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8E902E4-AFE5-4C67-A28D-90282A75961A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E902E4-AFE5-4C67-A28D-90282A75961A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E902E4-AFE5-4C67-A28D-90282A75961A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E902E4-AFE5-4C67-A28D-90282A75961A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
