@@ -25,29 +25,23 @@ namespace StockListener
             Console.WriteLine("*******************************************\n");
 
             _subscriptionClient.OnMessageAsync(async message =>
-                {
-                    Console.WriteLine("New Stock Recieved:\n");
-                    Console.WriteLine($"Message Label: {message.Label}\n");
-                    Console.WriteLine($"Message Content Type: {message.ContentType}\n");
-                    Console.WriteLine($"Message Sent Time: {message.EnqueuedTimeUtc.ToString(CultureInfo.InvariantCulture)}\n");
-                    
+            {
+                Console.WriteLine("New Stock Recieved:\n");
+                Console.WriteLine($"Message Label: {message.Label}\n");
+                Console.WriteLine($"Message Content Type: {message.ContentType}\n");
+                Console.WriteLine($"Message Sent Time: {message.EnqueuedTimeUtc.ToString(CultureInfo.InvariantCulture)}\n");
 
-                    Stream messageBodyStream = message.GetBody<Stream>();
-                    string messageBodyContent = await new StreamReader(messageBodyStream).ReadToEndAsync();
-                    StockItem stockItem = JsonConvert.DeserializeObject<StockItem>(messageBodyContent);
-                    //todo refactor out to to private methods
-                    //Todo handler class that handles stock item object messages
-                    Console.WriteLine($"Stock Item SKU: {stockItem.Sku}\n");
-                    Console.WriteLine($"Stock Item Warehouse: {stockItem.Warehouse}\n");
-                    Console.WriteLine($"Stock Item Quantity: {stockItem.Quantity}\n");
 
-                    Console.WriteLine("*******************************************\n");
-                    await message.CompleteAsync();
-                    _token.Register(() => _subscriptionClient.CloseAsync());
-                }
+                Stream messageBodyStream = message.GetBody<Stream>();
+                string messageBodyContent = await new StreamReader(messageBodyStream).ReadToEndAsync();
+                StockItem stockItem = JsonConvert.DeserializeObject<StockItem>(messageBodyContent);
+                StockItemHandler.HandleStockItem(stockItem);
+
+                Console.WriteLine("*******************************************\n");
+                await message.CompleteAsync();
+                _token.Register(() => _subscriptionClient.CloseAsync());
+            }
             );
         }
-
-
     }
 }
