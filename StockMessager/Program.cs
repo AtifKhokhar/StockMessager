@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,15 @@ namespace StockMessager
         public static void Main(string[] args)
         {
            
-           var stockMessagerService = new StockMessagerService(sender);
+            var stockMessagerService = new StockMessagerService(sender);
+            var stockItem = new StockItem("ABC", 1, "FCLondon", "DHL");
+
+            Console.WriteLine("Press any key to continue and send messages");
+            Console.ReadKey(true);
+            stockMessagerService.SendMessageAsync(stockItem).Wait();
+            Console.WriteLine("Message sent");
+            Console.ReadLine();
+
         }
 
     }
