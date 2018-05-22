@@ -26,7 +26,7 @@ namespace StockListener
 
             _subscriptionClient.OnMessageAsync(async message =>
             {
-                Console.WriteLine("New Stock Recieved:\n");
+                Console.WriteLine($"New Stock Recieved On {_subscriptionClient.Name} subscription:\n");
                 Console.WriteLine($"Message Label: {message.Label}\n");
                 Console.WriteLine($"Message Content Type: {message.ContentType}\n");
                 Console.WriteLine($"Message Sent Time: {message.EnqueuedTimeUtc.ToString(CultureInfo.InvariantCulture)}\n");
