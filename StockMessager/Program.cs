@@ -22,10 +22,18 @@ namespace StockMessager
             var stockItem = new StockItem("ABC", 1, "FCLondon", "DHL");
 
             Console.WriteLine("Press any key to continue and send messages");
-            Console.ReadKey(true);
-            stockMessagerService.SendMessageAsync(stockItem).Wait();
-            Console.WriteLine("Message sent");
-            Console.ReadLine();
+            var numberOfMessages = 5;
+            //todo send deadletter message
+            string cmd;
+            while ((cmd = Console.ReadLine()) != "exit")
+            {
+                for (int i = 0; i < numberOfMessages; i++)
+                {
+                    stockMessagerService.SendMessageAsync(stockItem).Wait();
+                    Console.WriteLine($"Message {i} sent");
+                }
+            }
+            
 
         }
 

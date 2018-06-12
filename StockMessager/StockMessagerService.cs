@@ -30,5 +30,6 @@ namespace StockMessager
 
           await messageSender.SendAsync(message);
         }
+
     }
 }

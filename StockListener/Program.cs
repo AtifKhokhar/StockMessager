@@ -17,23 +17,26 @@ namespace StockListener
         static MessagingFactory factory = MessagingFactory.CreateFromConnectionString(ServiceBusConnectionString);
         static void Main(string[] args)
         {
+            var stockMessageHandler = new StockItemHandler();
             var topicClient = factory.CreateTopicClient(TopicName);
             var subscriptionClient = factory.CreateSubscriptionClient(topicClient.Path, SubscriptionName);
-            var stockListener = new StockListenerService(subscriptionClient,CancellationToken.None);
-            stockListener.ListenToMessages();
+            var stockListener = new StockListenerService(subscriptionClient, stockMessageHandler);
+            stockListener.ListenToMessages(CancellationToken.None);
             CreateMultipleSubscriptions(topicClient);
             Console.ReadLine();
         }
 
         private static void CreateMultipleSubscriptions(TopicClient topicClient)
         {
+            //todo refactor this code to avoid repetitiion
+            var stockMessageHandler = new StockItemHandler();
             var subscriptionClientTwo = factory.CreateSubscriptionClient(topicClient.Path, "GBWestWarehouseStockLevels");
-            var stockListenerTwo = new StockListenerService(subscriptionClientTwo, CancellationToken.None);
-            stockListenerTwo.ListenToMessages();
+            var stockListenerTwo = new StockListenerService(subscriptionClientTwo, stockMessageHandler);
+            stockListenerTwo.ListenToMessages(CancellationToken.None);
 
             var subscriptionClientThree = factory.CreateSubscriptionClient(topicClient.Path, "GBEastWarehouseStockLevels");
-            var stockListenerThree = new StockListenerService(subscriptionClientThree, CancellationToken.None);
-            stockListenerThree.ListenToMessages();
+            var stockListenerThree = new StockListenerService(subscriptionClientThree, stockMessageHandler);
+            stockListenerThree.ListenToMessages(CancellationToken.None);
         }
     }
 }

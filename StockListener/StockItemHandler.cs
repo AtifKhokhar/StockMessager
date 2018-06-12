@@ -7,9 +7,9 @@ using StockMessager;
 
 namespace StockListener
 {
-    public static class StockItemHandler
+    public class StockItemHandler
     {
-        public static void HandleStockItem(StockItem stockItem)
+        public void HandleStockItem(StockItem stockItem)
         {
             Console.WriteLine($"Stock Item SKU: {stockItem.Sku}\n");
             Console.WriteLine($"Stock Item Warehouse: {stockItem.Warehouse}\n");

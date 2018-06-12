@@ -11,18 +11,21 @@ namespace StockListener
     public class StockListenerService
     {
         private readonly SubscriptionClient _subscriptionClient;
-        private readonly CancellationToken _token;
+        private readonly StockItemHandler _handler;
 
-        public StockListenerService(SubscriptionClient subscriptionClient, CancellationToken token)
+        public StockListenerService(SubscriptionClient subscriptionClient, StockItemHandler handler)
         {
             _subscriptionClient = subscriptionClient;
-            _token = token;
+            _handler = handler;
         }
 
-        public void ListenToMessages()
+        public void ListenToMessages(CancellationToken token)
         {
             Console.WriteLine("Listening to Stock Events....\n");
             Console.WriteLine("*******************************************\n");
+
+            token.Register(() => _subscriptionClient.CloseAsync());
+
 
             _subscriptionClient.OnMessageAsync(async message =>
             {
@@ -35,11 +38,10 @@ namespace StockListener
                 Stream messageBodyStream = message.GetBody<Stream>();
                 string messageBodyContent = await new StreamReader(messageBodyStream).ReadToEndAsync();
                 StockItem stockItem = JsonConvert.DeserializeObject<StockItem>(messageBodyContent);
-                StockItemHandler.HandleStockItem(stockItem);
+                _handler.HandleStockItem(stockItem);
 
                 Console.WriteLine("*******************************************\n");
                 await message.CompleteAsync();
-                _token.Register(() => _subscriptionClient.CloseAsync());
             }
             );
         }
