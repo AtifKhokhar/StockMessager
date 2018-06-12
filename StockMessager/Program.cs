@@ -27,6 +27,7 @@ namespace StockMessager
             string cmd;
             while ((cmd = Console.ReadLine()) != "exit")
             {
+                //var numberOfMessages = Int32.Parse(args[0]);
                 for (int i = 0; i < numberOfMessages; i++)
                 {
                     stockMessagerService.SendMessageAsync(stockItem).Wait();

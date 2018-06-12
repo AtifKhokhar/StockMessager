@@ -30,13 +30,15 @@ namespace StockListener
         {
             //todo refactor this code to avoid repetitiion
             var stockMessageHandler = new StockItemHandler();
-            var subscriptionClientTwo = factory.CreateSubscriptionClient(topicClient.Path, "GBWestWarehouseStockLevels");
-            var stockListenerTwo = new StockListenerService(subscriptionClientTwo, stockMessageHandler);
-            stockListenerTwo.ListenToMessages(CancellationToken.None);
+            CreateSubscriptionToListenMessages(topicClient, stockMessageHandler, "GBWestWarehouseStockLevels");
+            CreateSubscriptionToListenMessages(topicClient, stockMessageHandler, "GBEastWarehouseStockLevels");
+        }
 
-            var subscriptionClientThree = factory.CreateSubscriptionClient(topicClient.Path, "GBEastWarehouseStockLevels");
-            var stockListenerThree = new StockListenerService(subscriptionClientThree, stockMessageHandler);
-            stockListenerThree.ListenToMessages(CancellationToken.None);
+        private static void CreateSubscriptionToListenMessages(TopicClient topicClient, StockItemHandler stockMessageHandler, string name)
+        {
+            var subscriptionClient = factory.CreateSubscriptionClient(topicClient.Path, name);
+            var stockListener = new StockListenerService(subscriptionClient, stockMessageHandler);
+            stockListener.ListenToMessages(CancellationToken.None);
         }
     }
 }
