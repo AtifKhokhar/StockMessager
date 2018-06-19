@@ -33,6 +33,8 @@ namespace StockMessager
                     stockMessagerService.SendMessageAsync(stockItem).Wait();
                     Console.WriteLine($"Message {i} sent");
                 }
+                stockMessagerService.SendDeadletterMessageAsync(stockItem).Wait();
+                Console.WriteLine($"Poisoned Message sent");
             }
             
 

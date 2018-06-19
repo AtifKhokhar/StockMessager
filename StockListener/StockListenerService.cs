@@ -29,6 +29,12 @@ namespace StockListener
 
             _subscriptionClient.OnMessageAsync(async message =>
             {
+                if (message.ContentType != "application/json")
+                {
+                    await message.DeadLetterAsync("Invalid Content Type", $"Unable to process a message with a Content Type of {message.ContentType}");
+                    return;
+                }
+
                 Console.WriteLine($"New Stock Recieved On {_subscriptionClient.Name} subscription:\n");
                 Console.WriteLine($"Message Label: {message.Label}\n");
                 Console.WriteLine($"Message Content Type: {message.ContentType}\n");

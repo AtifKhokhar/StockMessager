@@ -31,5 +31,19 @@ namespace StockMessager
           await messageSender.SendAsync(message);
         }
 
+
+        public async Task SendDeadletterMessageAsync(StockItem stockItem)
+        {
+            var serializedStockItem = JsonConvert.SerializeObject(stockItem);
+            BrokeredMessage message =
+                new BrokeredMessage(new MemoryStream(Encoding.UTF8.GetBytes(serializedStockItem)), true)
+                {
+                    ContentType = "application/xml",
+                    Label = stockItem.GetType().ToString()
+                };
+
+
+            await messageSender.SendAsync(message);
+        }
     }
 }
