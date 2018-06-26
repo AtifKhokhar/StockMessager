@@ -22,7 +22,7 @@ namespace StockMessager
             var stockItem = new StockItem("ABC", 1, "FCLondon", "DHL");
 
             Console.WriteLine("Press any key to continue and send messages");
-            var numberOfMessages = 5;
+            var numberOfMessages = 1;
             //todo send deadletter message
             string cmd;
             while ((cmd = Console.ReadLine()) != "exit")

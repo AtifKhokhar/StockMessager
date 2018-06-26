@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceBus.Messaging;
+using StockListener.Repository;
 
 namespace StockListener
 {
@@ -15,12 +16,14 @@ namespace StockListener
         const string TopicName = "stocklevels";
         private const string SubscriptionName = "GBWarehouseStockLevels";
         static MessagingFactory factory = MessagingFactory.CreateFromConnectionString(ServiceBusConnectionString);
+        
         static void Main(string[] args)
         {
             var stockMessageHandler = new StockItemHandler();
             var topicClient = factory.CreateTopicClient(TopicName);
             var subscriptionClient = factory.CreateSubscriptionClient(topicClient.Path, SubscriptionName);
-            var stockListener = new StockListenerService(subscriptionClient, stockMessageHandler);
+            StockTransactionLogsDB stockTransactionLogsDb = new StockTransactionLogsDB();
+            var stockListener = new StockListenerService(subscriptionClient, stockMessageHandler, stockTransactionLogsDb);
             stockListener.ListenToMessages(CancellationToken.None);
             CreateMultipleSubscriptions(topicClient);
             Console.ReadLine();
@@ -36,8 +39,9 @@ namespace StockListener
 
         private static void CreateSubscriptionToListenMessages(TopicClient topicClient, StockItemHandler stockMessageHandler, string name)
         {
+            StockTransactionLogsDB stockTransactionLogsDb = new StockTransactionLogsDB();
             var subscriptionClient = factory.CreateSubscriptionClient(topicClient.Path, name);
-            var stockListener = new StockListenerService(subscriptionClient, stockMessageHandler);
+            var stockListener = new StockListenerService(subscriptionClient, stockMessageHandler, stockTransactionLogsDb);
             stockListener.ListenToMessages(CancellationToken.None);
         }
     }

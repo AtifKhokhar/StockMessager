@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using Newtonsoft.Json;
+using StockListener.Repository;
 using StockMessager;
 using SubscriptionClient = Microsoft.ServiceBus.Messaging.SubscriptionClient;
 
@@ -12,11 +13,13 @@ namespace StockListener
     {
         private readonly SubscriptionClient _subscriptionClient;
         private readonly StockItemHandler _handler;
+        private readonly StockTransactionLogsDB _stockTransactionLogsDb;
 
-        public StockListenerService(SubscriptionClient subscriptionClient, StockItemHandler handler)
+        public StockListenerService(SubscriptionClient subscriptionClient, StockItemHandler handler, StockTransactionLogsDB stockTransactionLogsDb)
         {
             _subscriptionClient = subscriptionClient;
             _handler = handler;
+            _stockTransactionLogsDb = stockTransactionLogsDb;
         }
 
         public void ListenToMessages(CancellationToken token)
@@ -45,7 +48,7 @@ namespace StockListener
                 string messageBodyContent = await new StreamReader(messageBodyStream).ReadToEndAsync();
                 StockItem stockItem = JsonConvert.DeserializeObject<StockItem>(messageBodyContent);
                 _handler.HandleStockItem(stockItem);
-
+                _stockTransactionLogsDb.PersistToDB(stockItem);
                 Console.WriteLine("*******************************************\n");
                 await message.CompleteAsync();
             }
