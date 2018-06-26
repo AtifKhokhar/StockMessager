@@ -49,6 +49,7 @@ namespace StockListener
                 StockItem stockItem = JsonConvert.DeserializeObject<StockItem>(messageBodyContent);
                 _handler.HandleStockItem(stockItem);
                 _stockTransactionLogsDb.PersistToDB(stockItem);
+                //_stockTransactionLogsDb.PersistToDbSQL(stockItem);
                 Console.WriteLine("*******************************************\n");
                 await message.CompleteAsync();
             }

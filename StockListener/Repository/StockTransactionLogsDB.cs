@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper;
 using Dapper.Contrib.Extensions;
 using StockListener.Repository.Entity;
 using StockMessager;
@@ -45,6 +46,39 @@ namespace StockListener.Repository
                 sqlConnection.Close();
 
                 Console.WriteLine("Done. ");
+            }
+        }
+
+        public void PersistToDbSQL(StockItem stockItem)
+        {
+            using (var sqlConnection
+                = new SqlConnection(ConfigurationManager.ConnectionStrings["DBConnString"].ConnectionString))
+            {
+                var sql = "INSERT INTO [StockTransactions].[dbo].[StockTransactionLogs] VALUES(@transactionId, @sku, @quantity, @warehouse, @deliveryProvider, @dateTransactionResceived)";
+                sqlConnection.Open();
+
+                var arguments = new
+                {
+                    transactionId = Guid.NewGuid().ToString(),
+                    sku = stockItem.Sku,
+                    quantity = stockItem.Quantity,
+                    warehouse = stockItem.Warehouse,
+                    deliveryProvider = stockItem.DeliveryProvider,
+                    dateTransactionResceived = DateTime.UtcNow
+                };
+
+                try
+                {
+                   sqlConnection.Execute(sql, arguments);
+                }
+       
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                sqlConnection.Close();
+
             }
         }
     }
